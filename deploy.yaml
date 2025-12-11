@@ -8,16 +8,28 @@
     - secrets.yaml
 
   tasks:
-    # 1. Apply Manifests (Creating deployments if they don't exist)
+    # --- 1. Infrastructure (Database & Logging) ---
+    - name: Apply MongoDB
+      command: kubectl apply -f k8s/mongodb.yaml
+
+    - name: Apply ELK Stack (Entire Folder)
+      command: kubectl apply -f k8s/elk/
+      # This applies all yaml files inside the 'elk' folder automatically
+
+    # --- 2. Application (Backend & Frontend) ---
     - name: Apply Backend Manifest
       command: kubectl apply -f k8s/backend.yaml
 
     - name: Apply Frontend Manifest
       command: kubectl apply -f k8s/frontend.yaml
 
-    # 2. Update Images (Using the registry var from Vault + tag from Jenkins)
+    # --- 3. Update Images ---
     - name: Update Backend Image
       command: kubectl set image deployment/backend backend={{ docker_registry }}/oyo-backend:{{ image_tag }}
 
     - name: Update Frontend Image
       command: kubectl set image deployment/frontend frontend={{ docker_registry }}/oyo-frontend:{{ image_tag }}
+
+    # --- 4. Scaling (HPA) ---
+    - name: Apply HPA
+      command: kubectl apply -f k8s/hpa.yaml
