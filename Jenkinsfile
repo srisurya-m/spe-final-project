@@ -3,14 +3,11 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
+        VAULT_CREDENTIALS_ID  = 'ansible-vault-password'
         
-        // Backend Config
+        // Image Config
         BACKEND_IMAGE = 'surya162/oyo-backend'
-        
-        // Frontend Config
         FRONTEND_IMAGE = 'surya162/oyo-frontend'
-        
-        // Shared Tag (keeps versions in sync)
         IMAGE_TAG = "v${BUILD_NUMBER}"
     }
 
@@ -25,8 +22,6 @@ pipeline {
             steps {
                 script {
                     echo "--- Building Backend: ${IMAGE_TAG} ---"
-                    
-                    // FIXED: Switch to 'backend' directory before building
                     dir('backend') {
                         sh "docker build -t $BACKEND_IMAGE:$IMAGE_TAG ."
                         sh "docker build -t $BACKEND_IMAGE:latest ."
@@ -39,7 +34,6 @@ pipeline {
             steps {
                 script {
                     echo "--- Building Frontend: ${IMAGE_TAG} ---"
-                    // 'dir' changes the directory to 'frontend' for this step
                     dir('frontend') { 
                         sh "docker build -t $FRONTEND_IMAGE:$IMAGE_TAG ."
                         sh "docker build -t $FRONTEND_IMAGE:latest ."
@@ -54,11 +48,9 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                         sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
                         
-                        // Push Backend
                         sh "docker push $BACKEND_IMAGE:$IMAGE_TAG"
                         sh "docker push $BACKEND_IMAGE:latest"
 
-                        // Push Frontend
                         sh "docker push $FRONTEND_IMAGE:$IMAGE_TAG"
                         sh "docker push $FRONTEND_IMAGE:latest"
                     }
@@ -69,9 +61,24 @@ pipeline {
         stage('Deploy with Ansible') {
             steps {
                 script {
-                    echo "--- Deploying Version ${IMAGE_TAG} ---"
-                    // We pass the single tag, Ansible applies it to both
-                    sh "ansible-playbook deploy.yaml --extra-vars 'image_tag=${IMAGE_TAG}'"
+                    echo "--- Deploying Version ${IMAGE_TAG} with Ansible Vault ---"
+                    
+                    withCredentials([string(credentialsId: VAULT_CREDENTIALS_ID, variable: 'VAULT_PASS')]) {
+                        
+                        // 1. Create temporary password file
+                        sh 'echo $VAULT_PASS > .vault_pass'
+                        
+                        // 2. Run Ansible using inventory.ini and vault password
+                        sh """
+                            ansible-playbook -i inventory.ini \
+                            --vault-password-file .vault_pass \
+                            deploy.yaml \
+                            --extra-vars 'image_tag=${IMAGE_TAG}'
+                        """
+                        
+                        // 3. Cleanup password file
+                        sh 'rm .vault_pass'
+                    }
                 }
             }
         }

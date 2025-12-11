@@ -1,30 +1,23 @@
 ---
 - name: Deploy Full Stack to Kubernetes
-  hosts: localhost
+  hosts: local
   connection: local
   gather_facts: no
-  vars:
-    image_tag: "latest" # passed from Jenkins
-    
+  
+  vars_files:
+    - secrets.yaml
+
   tasks:
-    # --- BACKEND ---
+    # 1. Apply Manifests (Creating deployments if they don't exist)
+    - name: Apply Backend Manifest
+      command: kubectl apply -f k8s/backend.yaml
+
+    - name: Apply Frontend Manifest
+      command: kubectl apply -f k8s/frontend.yaml
+
+    # 2. Update Images (Using the registry var from Vault + tag from Jenkins)
     - name: Update Backend Image
-      shell: |
-        kubectl set image deployment/backend backend=surya162/oyo-backend:{{ image_tag }}
-      register: backend_out
+      command: kubectl set image deployment/backend backend={{ docker_registry }}/oyo-backend:{{ image_tag }}
 
-    - name: Verify Backend Rollout
-      shell: kubectl rollout status deployment/backend
-
-    # --- FRONTEND ---
     - name: Update Frontend Image
-      shell: |
-        kubectl set image deployment/frontend frontend=surya162/oyo-frontend:{{ image_tag }}
-      register: frontend_out
-
-    - name: Verify Frontend Rollout
-      shell: kubectl rollout status deployment/frontend
-
-    - name: Deployment Summary
-      debug:
-        msg: "Successfully deployed v{{ image_tag }} to both Backend and Frontend."
+      command: kubectl set image deployment/frontend frontend={{ docker_registry }}/oyo-frontend:{{ image_tag }}
