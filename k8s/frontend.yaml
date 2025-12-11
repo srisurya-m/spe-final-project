@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: sathwik049/oyo-frontend:latest
+          image: surya162/oyo-frontend:v2
           ports:
             - containerPort: 80
           resources:

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: sathwik049/oyo-backend:latest
+          image: surya162/oyo-backend:v2
           ports:
             - containerPort: 4000
           resources:

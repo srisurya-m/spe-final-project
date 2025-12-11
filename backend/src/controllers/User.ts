@@ -21,6 +21,7 @@ export const newUserController = async (
         user.photo = photo;
         await user.save();
       }
+      console.log(`[Login Success] Existing user logged in: ${user.email}`);
 
       return res.status(200).json({
         success: true,
@@ -38,6 +39,8 @@ export const newUserController = async (
       phoneNumber,
       pincode,
     });
+
+    console.log(`[Signup Success] New user created: ${user.name} (${user.email})`);
 
     return res.status(201).json({
       success: true,

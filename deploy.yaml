@@ -1,0 +1,30 @@
+---
+- name: Deploy Full Stack to Kubernetes
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    image_tag: "latest" # passed from Jenkins
+    
+  tasks:
+    # --- BACKEND ---
+    - name: Update Backend Image
+      shell: |
+        kubectl set image deployment/backend backend=surya162/oyo-backend:{{ image_tag }}
+      register: backend_out
+
+    - name: Verify Backend Rollout
+      shell: kubectl rollout status deployment/backend
+
+    # --- FRONTEND ---
+    - name: Update Frontend Image
+      shell: |
+        kubectl set image deployment/frontend frontend=surya162/oyo-frontend:{{ image_tag }}
+      register: frontend_out
+
+    - name: Verify Frontend Rollout
+      shell: kubectl rollout status deployment/frontend
+
+    - name: Deployment Summary
+      debug:
+        msg: "Successfully deployed v{{ image_tag }} to both Backend and Frontend."
