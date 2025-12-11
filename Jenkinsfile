@@ -71,7 +71,7 @@ pipeline {
                 script {
                     echo "--- Deploying Version ${IMAGE_TAG} ---"
                     // We pass the single tag, Ansible applies it to both
-                    sh "ansible-playbook deploy.yml --extra-vars 'image_tag=${IMAGE_TAG}'"
+                    sh "ansible-playbook deploy.yaml --extra-vars 'image_tag=${IMAGE_TAG}'"
                 }
             }
         }
