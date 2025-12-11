@@ -33,9 +33,29 @@ pipeline {
         stage('Build & Push Frontend') {
             steps {
                 script {
-                    echo "--- Building Frontend: ${IMAGE_TAG} ---"
+                    echo "--- Building Frontend: ${IMAGE_TAG} with Secrets ---"
                     dir('frontend') { 
-                        sh "docker build -t $FRONTEND_IMAGE:$IMAGE_TAG ."
+                        // Wrap the build in withCredentials to access the secrets
+                        withCredentials([
+                            string(credentialsId: 'FIREBASE_API_KEY', variable: 'API_KEY'),
+                            string(credentialsId: 'FIREBASE_AUTH_DOMAIN', variable: 'AUTH_DOMAIN'),
+                            string(credentialsId: 'FIREBASE_PROJECT_ID', variable: 'PROJECT_ID'),
+                            string(credentialsId: 'FIREBASE_STORAGE_BUCKET', variable: 'STORAGE_BUCKET'),
+                            string(credentialsId: 'FIREBASE_MESSAGING_SENDER_ID', variable: 'SENDER_ID'),
+                            string(credentialsId: 'FIREBASE_APP_ID', variable: 'APP_ID')
+                        ]) {
+                            sh """
+                                docker build \
+                                --build-arg VITE_API_KEY=${API_KEY} \
+                                --build-arg VITE_AUTH_DOMAIN=${AUTH_DOMAIN} \
+                                --build-arg VITE_PROJECT_ID=${PROJECT_ID} \
+                                --build-arg VITE_STORAGE_BUCKET=${STORAGE_BUCKET} \
+                                --build-arg VITE_MESSAGING_SENDER_ID=${SENDER_ID} \
+                                --build-arg VITE_APP_ID=${APP_ID} \
+                                -t $FRONTEND_IMAGE:$IMAGE_TAG .
+                            """
+                        }
+                        // Tag latest outside the secret block (optional, but cleaner)
                         sh "docker build -t $FRONTEND_IMAGE:latest ."
                     }
                 }
