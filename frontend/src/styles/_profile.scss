@@ -1,0 +1,294 @@
+.profile-container {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  gap: 2%;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.profile-left,
+.profile-right {
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.profile-left {
+  width: 30%;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px; 
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+.profile-submit-button {
+  background-color: #007bff;
+  color: white; 
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.profile-submit-button:hover:not([disabled]) {
+  background-color: #0056b3; 
+}
+
+.profile-submit-button:disabled {
+  background-color: #cccccc; 
+  color: #f7f7f7; 
+  cursor: not-allowed;
+}
+
+.profile-left h2 {
+  color: #333;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.profile-left form {
+  width: 100%; /* Ensure form takes full width of container */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Add space between form fields */
+}
+
+.profile-left .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-left label {
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 5px; /* Add spacing below label */
+}
+
+.profile-left input[type="text"],
+.profile-left input[type="email"],
+.profile-left input[type="file"],
+.profile-left input[type="tel"] {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.profile-left input[type="text"]:focus,
+.profile-left input[type="email"]:focus,
+.profile-left input[type="file"]:focus,
+.profile-left input[type="tel"]:focus {
+  border-color: #007bff;
+}
+
+.profile-left button {
+  padding: 12px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.profile-left button:hover {
+  background-color: #0056b3;
+  transform: scale(1.02);
+}
+
+.profile-left .profile-photo-container {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  margin: 0 auto 20px;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.profile-left .profile-photo-container:hover {
+  border-color: #007bff;
+}
+
+.profile-left .profile-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+.profile-right {
+  width: 70%;
+  background-color: #ffffff;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.profile-h2,
+.profile-h3 {
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.profile-h2 {
+  text-align: center;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.profile-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-label {
+  font-weight: bold;
+  color: #555;
+}
+
+.profile-input-text,
+.profile-input-email,
+.profile-input-file {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  display: block;
+  
+  &.hidden {
+    display: none;
+  }
+}
+
+.profile-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.profile-photo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 20px;
+  border: 2px solid #ddd;
+
+  &:hover {
+    border-color: #007bff;
+  }
+}
+
+.profile-photo {
+  width: 100%;
+  height: 100%; 
+  object-fit: cover; 
+  display: block; 
+}
+
+.profile-service-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  
+}
+
+.profile-service-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-services-list {
+  display: flex;
+  gap: 20px;
+}
+
+.profile-orders {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-orders-section {
+  background-color: #f1f1f1;
+  padding: 15px;
+  border-radius: 8px;
+  height: 350px;
+  overflow: hidden;
+  position: relative;
+}
+
+.profile-orders-list {
+  height: 100%;
+  overflow-y: scroll;
+  padding-right: 10px;
+  padding-bottom: 60px;
+  scrollbar-width: none;
+}
+
+.profile-orders-list::-webkit-scrollbar {
+  display: none;
+}
+
+.profile-order-item {
+  background-color: #fff;
+  display: flex;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  gap: 3px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-order-item h4 {
+  margin: 0;
+}
+
+.profile-order-item p {
+  color: #000000;
+}

@@ -1,0 +1,23 @@
+@use "header" as *;
+@use "home" as *;
+@use "login" as *;
+@use "profile" as *;
+@use "footer" as *;
+@use "addservice" as *;
+@use "quicksettings" as *;
+@use "address" as *;
+@use "services" as *;
+@use "dashboard" as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}

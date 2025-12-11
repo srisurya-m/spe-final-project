@@ -1,0 +1,79 @@
+body, html {
+  height: 100%;
+  overflow-x: hidden;
+  margin: 0;
+}
+.footer-container {
+  height: 50vh;
+  overflow: hidden;
+  padding: 40px 20px;
+  background-color: #1d1f21;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.footer-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.footer-section {
+  width: 30%;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.footer-section h3 {
+  font-size: 1.4em;
+  margin-bottom: 15px;
+  color: #ff6f61;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  font-size: 1em;
+}
+
+.footer-section ul li {
+  margin: 8px 0;
+  color: #ddd;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.footer-section ul li:hover {
+  color: #ff6f61;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  font-size: 1.5em;
+}
+
+.social-icons svg {
+  color: #ddd;
+  transition: color 0.3s;
+}
+
+.social-icons svg:hover {
+  color: #ff6f61;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 1em;
+  color: #ddd;
+}
