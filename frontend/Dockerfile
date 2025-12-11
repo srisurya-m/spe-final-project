@@ -17,7 +17,10 @@ ARG VITE_STORAGE_BUCKET
 ARG VITE_MESSAGING_SENDER_ID
 ARG VITE_APP_ID
 
-# Set them as ENV variables so 'npm run build' can see them
+# 1. Define VITE_SERVER explicitly as an empty string for Nginx proxying
+ENV VITE_SERVER=""   
+
+# Set others as ENV variables so 'npm run build' can see them
 ENV VITE_API_KEY=$VITE_API_KEY
 ENV VITE_AUTH_DOMAIN=$VITE_AUTH_DOMAIN
 ENV VITE_PROJECT_ID=$VITE_PROJECT_ID
