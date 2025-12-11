@@ -25,9 +25,12 @@ pipeline {
             steps {
                 script {
                     echo "--- Building Backend: ${IMAGE_TAG} ---"
-                    // Assumes Backend Dockerfile is in the ROOT directory
-                    sh "docker build -t $BACKEND_IMAGE:$IMAGE_TAG ."
-                    sh "docker build -t $BACKEND_IMAGE:latest ."
+                    
+                    // FIXED: Switch to 'backend' directory before building
+                    dir('backend') {
+                        sh "docker build -t $BACKEND_IMAGE:$IMAGE_TAG ."
+                        sh "docker build -t $BACKEND_IMAGE:latest ."
+                    }
                 }
             }
         }
@@ -38,7 +41,6 @@ pipeline {
                     echo "--- Building Frontend: ${IMAGE_TAG} ---"
                     // 'dir' changes the directory to 'frontend' for this step
                     dir('frontend') { 
-                        // Assumes Frontend Dockerfile is inside the 'frontend' folder
                         sh "docker build -t $FRONTEND_IMAGE:$IMAGE_TAG ."
                         sh "docker build -t $FRONTEND_IMAGE:latest ."
                     }
