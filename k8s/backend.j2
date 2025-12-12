@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          # Ansible will inject the specific version tag here
+          image: surya162/oyo-backend:{{ image_tag }}
+          ports:
+            - containerPort: 4000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          env:
+            # Secrets injected from Ansible Vault
+            - name: MONGO_URI
+              value: "{{ mongo_uri }}"
+            - name: PORT
+              value: "{{ port }}"
+            - name: CLOUD_NAME
+              value: "{{ cloud_name }}"
+            - name: CLOUD_API_KEY
+              value: "{{ cloud_api_key }}"
+            - name: CLOUD_API_SECRET
+              value: "{{ cloud_api_secret }}"
+            - name: COMPANY_PASS
+              value: "{{ company_pass }}"
+            - name: COMPANY_EMAIL
+              value: "{{ company_email }}"
+            
+            # Email Templates
+            - name: SUBJECT_ORDER_CONFIRMATION_DISTRIBUTOR
+              value: "{{ dist_subject }}"
+            - name: TEXT_ORDER_CONFIRMATION_DISTRIBUTOR
+              value: "{{ dist_text }}"
+            - name: SUBJECT_ORDER_CONFIRMATION_CLIENT
+              value: "{{ client_subject }}"
+            - name: TEXT_ORDER_CONFIRMATION_CLIENT
+              value: "{{ client_text }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 4000
+      targetPort: 4000
+  type: ClusterIP

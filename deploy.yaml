@@ -4,6 +4,7 @@
   connection: local
   gather_facts: no
   
+  # Load the encrypted secrets
   vars_files:
     - secrets.yaml
 
@@ -12,24 +13,27 @@
     - name: Apply MongoDB
       command: kubectl apply -f k8s/mongodb.yaml
 
-    - name: Apply ELK Stack (Entire Folder)
+    - name: Apply ELK Stack
       command: kubectl apply -f k8s/elk/
-      # This applies all yaml files inside the 'elk' folder automatically
 
-    # --- 2. Application (Backend & Frontend) ---
+    # --- 2. Backend (Secured via Ansible Vault) ---
+    - name: Generate Backend Manifest from Template
+      template:
+        src: k8s/backend.j2
+        dest: k8s/backend_final.yaml # Creates a temporary file with secrets filled in
+
     - name: Apply Backend Manifest
-      command: kubectl apply -f k8s/backend.yaml
+      command: kubectl apply -f k8s/backend_final.yaml
 
+    # --- 3. Frontend (Standard Deploy) ---
     - name: Apply Frontend Manifest
       command: kubectl apply -f k8s/frontend.yaml
 
-    # --- 3. Update Images ---
-    - name: Update Backend Image
-      command: kubectl set image deployment/backend backend={{ docker_registry }}/oyo-backend:{{ image_tag }}
-
+    # --- 4. Update Frontend Image ---
+    # We keep this for Frontend because we didn't make a template for it yet
     - name: Update Frontend Image
       command: kubectl set image deployment/frontend frontend={{ docker_registry }}/oyo-frontend:{{ image_tag }}
 
-    # --- 4. Scaling (HPA) ---
+    # --- 5. Scaling (HPA) ---
     - name: Apply HPA
       command: kubectl apply -f k8s/hpa.yaml
