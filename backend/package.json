@@ -6,7 +6,8 @@
     "start": "node dist/app.js",
     "build": "tsc",
     "watch": "tsc -w",
-    "dev": "npx tsx watch ./src/app.ts"
+    "dev": "npx tsx watch ./src/app.ts",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -26,9 +27,12 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jest": "^30.0.0",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.9.0",
     "@types/validator": "^13.12.2",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.6",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   }
