@@ -48,7 +48,7 @@ pipeline {
                         // FIX: Use triple-quotes for command and double-quotes for the variable.
                         // This forces Jenkins to properly resolve the absolute path of the 'frontend' directory.
                         sh """
-                            docker run --rm -v "${PWD}":/app -w /app node:18-alpine sh -c "npm install && npm test"
+                            docker run --rm -v ${WORKSPACE}/frontend:/app -w /app node:18-alpine sh -c "npm install && npm test"
                         """
                         
                         echo "--- 🔨 Building Frontend: ${IMAGE_TAG} ---"
