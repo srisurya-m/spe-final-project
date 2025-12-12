@@ -18,7 +18,7 @@ pipeline {
             }
         }
 
-        stage('Build & Push Backend') {
+        stage('Build Backend') {
             steps {
                 script {
                     echo "--- Building Backend: ${IMAGE_TAG} ---"
@@ -30,12 +30,11 @@ pipeline {
             }
         }
 
-        stage('Build & Push Frontend') {
+        stage('Build Frontend') {
             steps {
                 script {
                     echo "--- Building Frontend: ${IMAGE_TAG} with Secrets ---"
                     dir('frontend') { 
-                        // Wrap the build in withCredentials to access the secrets
                         withCredentials([
                             string(credentialsId: 'FIREBASE_API_KEY', variable: 'API_KEY'),
                             string(credentialsId: 'FIREBASE_AUTH_DOMAIN', variable: 'AUTH_DOMAIN'),
@@ -55,12 +54,27 @@ pipeline {
                                 -t $FRONTEND_IMAGE:$IMAGE_TAG .
                             """
                         }
-                        // Tag latest outside the secret block (optional, but cleaner)
                         sh "docker build -t $FRONTEND_IMAGE:latest ."
                     }
                 }
             }
         }
+
+        // --- NEW SECURITY STAGE START ---
+        stage('Security Scan (Trivy)') {
+            steps {
+                script {
+                    echo "--- 🛡️ Scanning Backend Image for Vulnerabilities ---"
+                    // --severity HIGH,CRITICAL: Only show the big issues
+                    // --exit-code 0: Don't fail the build (just report it). Change to 1 to fail on error.
+                    sh "trivy image --format table --exit-code 0 --severity HIGH,CRITICAL $BACKEND_IMAGE:$IMAGE_TAG"
+                    
+                    echo "--- 🛡️ Scanning Frontend Image for Vulnerabilities ---"
+                    sh "trivy image --format table --exit-code 0 --severity HIGH,CRITICAL $FRONTEND_IMAGE:$IMAGE_TAG"
+                }
+            }
+        }
+        // --- NEW SECURITY STAGE END ---
 
         stage('Login & Push All') {
             steps {
@@ -84,7 +98,6 @@ pipeline {
                     echo "--- Deploying Version ${IMAGE_TAG} with Ansible Vault ---"
                     
                     withCredentials([string(credentialsId: VAULT_CREDENTIALS_ID, variable: 'VAULT_PASS')]) {
-                        
                         // 1. Create temporary password file
                         sh 'echo $VAULT_PASS > .vault_pass'
                         
