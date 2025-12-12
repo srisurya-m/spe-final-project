@@ -25,9 +25,14 @@
     - name: Apply Backend Manifest
       command: kubectl apply -f k8s/backend_final.yaml
 
-    # --- 3. Frontend (Standard Deploy) ---
+    # --- 3. Frontend (Templated) ---
+    - name: Generate Frontend Manifest from Template
+      template:
+        src: k8s/frontend.j2
+        dest: k8s/frontend_final.yaml
+
     - name: Apply Frontend Manifest
-      command: kubectl apply -f k8s/frontend.yaml
+      command: kubectl apply -f k8s/frontend_final.yaml
 
     # --- 4. Update Frontend Image ---
     # We keep this for Frontend because we didn't make a template for it yet
