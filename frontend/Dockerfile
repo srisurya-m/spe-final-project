@@ -9,26 +9,6 @@ RUN npm install
 
 COPY . .
 
-# --- START: Receive Secrets from Jenkins ---
-ARG VITE_API_KEY
-ARG VITE_AUTH_DOMAIN
-ARG VITE_PROJECT_ID
-ARG VITE_STORAGE_BUCKET
-ARG VITE_MESSAGING_SENDER_ID
-ARG VITE_APP_ID
-
-# 1. Define VITE_SERVER explicitly as an empty string for Nginx proxying
-ENV VITE_SERVER=""   
-
-# Set others as ENV variables so 'npm run build' can see them
-ENV VITE_API_KEY=$VITE_API_KEY
-ENV VITE_AUTH_DOMAIN=$VITE_AUTH_DOMAIN
-ENV VITE_PROJECT_ID=$VITE_PROJECT_ID
-ENV VITE_STORAGE_BUCKET=$VITE_STORAGE_BUCKET
-ENV VITE_MESSAGING_SENDER_ID=$VITE_MESSAGING_SENDER_ID
-ENV VITE_APP_ID=$VITE_APP_ID
-# --- END: Receive Secrets ---
-
 RUN npm run build
 
 # Serve stage
