@@ -45,14 +45,13 @@ pipeline {
                 script {
                     dir('frontend') { 
                         echo "--- 🧪 Running Frontend Security Tests ---"
-                        // FIX: Use triple-quotes for command and double-quotes for the variable.
-                        // This forces Jenkins to properly resolve the absolute path of the 'frontend' directory.
+                        // FIX: Use WORKSPACE/frontend path for robust volume mounting
                         sh """
                             docker run --rm -v ${WORKSPACE}/frontend:/app -w /app node:18-alpine sh -c "npm install && npm test"
                         """
                         
                         echo "--- 🔨 Building Frontend: ${IMAGE_TAG} ---"
-                        // If tests pass, proceed to build the final Nginx image
+                        // Pass VITE_SERVER="" for Nginx to handle proxying
                         withCredentials([
                             string(credentialsId: 'FIREBASE_API_KEY', variable: 'API_KEY'),
                             string(credentialsId: 'FIREBASE_AUTH_DOMAIN', variable: 'AUTH_DOMAIN'),
@@ -63,6 +62,7 @@ pipeline {
                         ]) {
                             sh """
                                 docker build \
+                                --build-arg VITE_SERVER="" \
                                 --build-arg VITE_API_KEY=${API_KEY} \
                                 --build-arg VITE_AUTH_DOMAIN=${AUTH_DOMAIN} \
                                 --build-arg VITE_PROJECT_ID=${PROJECT_ID} \
